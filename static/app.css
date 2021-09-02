@@ -1,0 +1,21 @@
+img {
+    width: 120px; 
+    height: 120px;
+    margin-right: 10px; 
+}
+section {
+    margin-top: 1.5em;
+}
+
+p {
+    width: 450px;
+    color: white;
+    background-color: rgb(231, 112, 76);
+    border-radius: 5px;
+    padding: 0.5em;
+    font-size: 1em;
+    margin-top: 0.5em;
+    border: solid 2px rgb(214, 82, 42);
+  }
+
+

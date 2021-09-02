@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Edit User{% endblock %}
+{% block content %} 
+
+    <h3 class="h3">Edit a User:</h3>
+    <h6><i>* - mandatory fields</i></h6>
+    <form action='/users/{{user.id}}/edit' method="POST">
+        <br>
+        <div class="mb-3">
+            <label for="first_name" class="form-label">First Name: * </label>
+            <input type="text" name="first_name" placeholder="{{user.first_name}}" required maxlength="20">
+        </div>
+        <div class="mb-3">
+            <label for="lastt_name" class="form-label">Last Name: * </label>
+            <input type="text" name="last_name" placeholder="{{user.last_name}}" required maxlength="30">
+        </div>
+        <div class="mb-3">
+            <label for="first_name" class="form-label">Image URL:  </label>
+            <input type="url" name="url" placeholder="{{user.image_url}}" maxlength="250">
+        </div>
+        <a class="btn btn-outline-primary" href="/users/{{user.id}}"> Cancel </a>
+        <button class="btn btn-primary">Save</button>
+    </form>
+
+{% endblock %}
+
+

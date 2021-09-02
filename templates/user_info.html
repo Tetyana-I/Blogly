@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}User Info{% endblock %}
+{% block content %} 
+
+<table>
+    <tr>
+        <th>
+            <img src="{{user.image_url}}" alt="Sorry, couldn't find a picture">
+        </th>
+        <th>
+            <h2>{{user.first_name}} {{user.last_name}}</h2>
+            <br>
+            <form action='/users/{{user.id}}/delete' method="POST">
+                <div class="mb-3">
+                    <a class="btn btn-primary" href="/users/{{user.id}}/edit"> Edit </a>
+                    <button class="btn btn-danger"> Delete </a>        
+                </div>
+            </form>
+        </th>
+    </tr>
+</table>
+
+{% endblock %}
+
