@@ -1,6 +1,6 @@
 """Blogly application."""
 
-from flask import Flask,render_template, request,  redirect
+from flask import Flask, render_template, request,  redirect
 #flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User
@@ -10,14 +10,12 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
-
-
 app.config['SECRET_KEY'] = "very-very-secret"
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
-# Don't forget to delete
+# Commented here because we have this line in seed.py
 # db.create_all()
 
 @app.route('/')    
