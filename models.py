@@ -19,6 +19,19 @@ class User(db.Model):
         return f"<User id={u.id} first_name={u.first_name} last_name={u.last_name} image_url={u.image_url}>"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    first_name = db.Column(db.String(20), nullable=False)
-    last_name = db.Column(db.String(30), nullable=False)
-    image_url = db.Column(db.String(250), nullable=True, default="/static/unknown.jpg")
+    first_name = db.Column(db.Text, nullable=False)
+    last_name = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.Text, nullable=True, default="/static/unknown.jpg")
+    userposts = db.relationship('Post', cascade="all, delete")
+    
+class Post(db.Model):
+    """ Post """
+    __tablename__ = "posts"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.Text, nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), default=db.func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"))
+    u = db.relationship('User')
+    

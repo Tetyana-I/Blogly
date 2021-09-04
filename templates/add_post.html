@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Add Post{% endblock %}
+{% block content %} 
+
+    <h3 class="h3">Add Post for {{user.first_name}} {{user.last_name}}</h3>
+    <h6><i>* - mandatory fields</i></h6>
+    <form action='/users/{{user.id}}/posts/new' method="POST">
+        <br>
+        <div class="mb-3">
+            <label for="title" class="form-label">Title: *</label> <br>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Content: *</label> <br>
+            <textarea id="content" name="content" rows="5" cols="40" placeholder="Enter your text here ..." required></textarea>
+        </div>
+        <a class="btn btn-outline-success" href="/users/{{user.id}}"> Cancel </a>
+        <button class="btn btn-success">Add Post</button>
+    </form>
+
+{% endblock %}
