@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block title %}User Info{% endblock %}
-{% block content %} 
+{% block content %}
 
 <table>
     <tr>
-        <th>
+        <td>
             <img src="{{user.image_url}}" alt="Sorry, couldn't find a picture">
-        </th>
-        <th>
+        </td>
+        <td>
             <h2>{{user.first_name}} {{user.last_name}}</h2>
             <br>
             <form action='/users/{{user.id}}/delete' method="POST">
@@ -16,7 +16,26 @@
                     <button class="btn btn-danger"> Delete </a>        
                 </div>
             </form>
-        </th>
+        </td>
+    </tr>
+    <tr>
+        <td>
+        </td>
+        <td>
+            <form action="/users/{{user.id}}/posts/new">
+                <h3 class="h4">Posts</h3>
+                <ul>
+                    {% if user.userposts %}
+                        {% for post in user.userposts %}
+                           <li><a href="/posts/{{post.id}}">{{post.title}}</a></li>
+                        {% endfor %}
+                    {% else %}
+                        <h6>No posts so far ...</h6>
+                    {% endif%}
+                </ul>
+                <button class="btn btn-primary"> Add Post </button>
+            </form>
+        </td>
     </tr>
 </table>
 
