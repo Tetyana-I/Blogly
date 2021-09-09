@@ -13,6 +13,14 @@
             <label for="content" class="form-label">Post Content:</label> <br>
             <textarea id="content" name="content" rows="5" cols="40" placeholder='{{post.content}}'></textarea>
         </div>
+        <div class="mb-3">
+            {% for tag in tags %}
+            <div>
+                <input type="checkbox" id="{{tag.name}}" name="tags" value="{{tag.name}}" {% if tag in post.tags %} checked {% endif %}>
+                <label class="form-label" for="{{tag.name}}">{{tag.name}}</label>            
+            </div>
+            {% endfor %}
+        </div>
         <a class="btn btn-outline-success" href="/users/{{post.user_id}}"> Cancel </a>
         <button class="btn btn-success">Save</button>
     </form>

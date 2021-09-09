@@ -14,11 +14,14 @@
             <a class="navbar-brand" href="#">BLOGLY</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                   <a class="nav-link" href="/users">Home</a>
+                   <a class="nav-link" href="/">Home</a>
                 </li>
                 <li class="nav-item">
                    <a class="nav-link" href="/users">All Users</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tags">Tags</a>
+                 </li>
             </ul>
         </div>
     </nav>
@@ -27,18 +30,6 @@
         {% block content %} 
         
         {% endblock %}
-        
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <section>
-                {% for msg in messages %}
-                <div>
-                    <p class="flash">{{msg}}</p> 
-                </div>
-                {% endfor %}
-            </section>
-        {% endif %}
-    {% endwith %}  
     </div>
 </body>
 </html>

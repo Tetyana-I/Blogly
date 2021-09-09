@@ -1,9 +1,8 @@
 """Blogly application."""
 
 from flask import Flask, render_template, request,  redirect
-#flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Post
+from models import db, connect_db, User, Post, Tag
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -14,21 +13,21 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
-# Commented here because we have this line in seed.py
+# Commented here because we have this command in seed.py:
 # db.create_all()
 
 @app.route('/')    
 def home_page():
-    """ Redirect to list of users """
-    return redirect("/users")
-
+    """Shows 5 recent posts """
+    posts = Post.query.order_by(Post.created_at.desc()).limit(5).all()
+    return render_template("/home_page.html", posts=posts)
 
 @app.route('/users')
 def show_users():
     """ Shows list of all users in db,
     has links to view the detail page for each user,
     has a link here to the add-user form. """
-    users = User.query.all()
+    users = User.query.order_by(User.last_name, User.first_name).all()
     return render_template('/users_list.html', users=users)
 
 @app.route('/users/new')
@@ -91,23 +90,30 @@ def handle_user_changes(user_id):
 @app.route('/users/<int:user_id>/delete', methods = ["POST"])
 def delete_user(user_id):
     """ Delete the user """
-    User.query.filter_by(id=user_id).delete()
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
     db.session.commit()
     return redirect('/users')
+
+###################################################
+# post routes
+###################################################
 
 @app.route('/users/<int:user_id>/posts/new')
 def show_post_form(user_id):
     """ Show form to add a post for that user """
     user = User.query.get_or_404(user_id)
-    return render_template("/add_post.html", user=user)
-
+    tags = Tag.query.all()
+    return render_template("/add_post.html", user=user, tags=tags)
 
 @app.route('/users/<int:user_id>/posts/new', methods=['POST'])
 def add_new_post(user_id):
     """ Processes add-post form, adding a new post to the given user and going back to user info """
     title = request.form["title"]
     content = request.form["content"]
-    new_post = Post(title=title, content=content, user_id=user_id)
+    tags_list = [name for name in request.form.getlist("tags")]
+    tags = Tag.query.filter(Tag.name.in_(tags_list)).all() 
+    new_post = Post(title=title, content=content, user_id=user_id, tags=tags)
     db.session.add(new_post)
     db.session.commit()
     return redirect(f'/users/{user_id}')
@@ -122,13 +128,16 @@ def show_post(post_id):
 def show_edit_post_form(post_id):
     """ Shows form to edit a post, and to cancel (back to user page). """
     post = Post.query.get_or_404(post_id)
-    return render_template("/edit_post.html", post=post)
+    tags = Tag.query.all()
+    return render_template("/edit_post.html", post=post, tags=tags)
 
 @app.route('/posts/<int:post_id>/edit', methods=["POST"])
 def handle_post_changes(post_id):
     """ Handle editing of a post. Redirect back to the post view. """
     title = request.form["title"]
     content = request.form["content"]
+    tags_list = [name for name in request.form.getlist("tags")]
+    tags = Tag.query.filter(Tag.name.in_(tags_list)).all()
     updated_post = Post.query.get_or_404(post_id)
     updated = False
     if title:
@@ -140,15 +149,74 @@ def handle_post_changes(post_id):
     if updated:
         db.session.add(updated_post)
         db.session.commit()
+    
+    updated_post.tags = tags
+    db.session.add(updated_post)
+    db.session.commit()
+  
     return redirect(f"/posts/{post_id}")
 
 @app.route('/posts/<int:post_id>/delete', methods=["POST"])
 def delete_post(post_id):
     """ Delete the post """
     post = Post.query.get_or_404(post_id)
-    Post.query.filter_by(id=post_id).delete()
+    db.session.delete(post)
     db.session.commit()
     return redirect(f'/users/{post.user_id}')
 
-   
+##################################################################
+#  tags routes
+##################################################################
+
+@app.route('/tags')  
+def show_tags():
+    """ Lists all tags, with links to the tag detail page """
+    tags = Tag.query.order_by(Tag.name).all()
+    return render_template('/tags_list.html', tags=tags)
  
+@app.route('/tags/<int:tag_id>')
+def tag_info(tag_id):
+    """ Shows detail about a tag. Have links to edit form and to delete """
+    tag = Tag.query.get_or_404(tag_id)
+    return render_template("/show_tag.html", tag=tag)
+
+@app.route('/tags/new')
+def show_tag_form():
+    """ Shows a form to add a new tag """
+    return render_template('/create_tag.html')
+
+@app.route('/tags/new', methods=["POST"])
+def add_new_tag():
+    """ Process add form, adds tag, and redirect to tag list """
+    name = request.form["name"]
+    new_tag = Tag(name=name)
+    db.session.add(new_tag)
+    db.session.commit()
+    return redirect('/tags')
+
+@app.route('/tags/<int:tag_id>/edit')
+def show_edit_tag_form(tag_id):
+    """ Shows edit form for a tag """
+    tag = Tag.query.get_or_404(tag_id)
+    return render_template("/edit_tag.html", tag=tag)
+    
+@app.route('/tags/<int:tag_id>/edit', methods=["POST"])
+def handle_edit_tag(tag_id):
+    """ Processes edit form, edit tag, and redirects to the tags list. """
+    name = request.form["name"]
+    updated_tag = Tag.query.get_or_404(tag_id)
+    updated = False
+    if name:
+        updated_tag.name = name
+        updated = True
+    if updated:
+        db.session.add(updated_tag)
+        db.session.commit()
+    return redirect("/tags")
+    
+@app.route('/tags/<int:tag_id>/delete', methods=["POST"])
+def handle_delete_tag(tag_id):
+    """ Deletes a tag """
+    Tag.query.filter_by(id=tag_id).delete()
+    db.session.commit()
+    return redirect('/tags')

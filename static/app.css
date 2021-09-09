@@ -6,21 +6,27 @@ section {
     margin-top: 1.5em;
 }
 
-.flash p {
-    width: 450px;
-    color: white;
-    background-color: rgb(231, 112, 76);
-    border-radius: 5px;
-    padding: 0.5em;
-    font-size: 1em;
-    margin-top: 0.5em;
-    border: solid 2px rgb(214, 82, 42);
-  }
-
 a {
     text-decoration: none;
 }
 
 td {
     vertical-align: top;
+}
+
+.post {
+    width: 450px;
+    color: rgb(127, 143, 179);
+    border-radius: 5px;
+    padding: 1em;
+    font-size: 1em;
+    margin-top: 0.5em;
+    border: solid 2px rgb(127, 143, 179);
+  }
+
+.tag {
+    font-size: 0.9em;
+    font-style: italic;
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
 }
