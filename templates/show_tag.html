@@ -9,9 +9,6 @@
         {% endfor %}        
     </ul>
     <button class="btn btn-primary" formaction="/tags/{{tag.id}}/edit" formmethod="GET"> Edit Tag </button>   
-    
-    {% if tag.posts == [] %} 
-        <button class="btn btn-danger" formaction="/tags/{{tag.id}}/delete" formmethod="POST"> Delete Tag </button>   
-    {% endif %}
+    <button class="btn btn-danger" formaction="/tags/{{tag.id}}/delete" formmethod="POST"> Delete Tag </button>   
 </form>
 {% endblock %}
